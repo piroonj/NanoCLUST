@@ -386,7 +386,7 @@ if(params.multiqc){
 
      script:
      """
-     medaka_consensus -i $corrected_reads -d $draft -o consensus_medaka.fasta -t 4 -m r941_min_high_g303
+     medaka_consensus -i $corrected_reads -d $draft -o consensus_medaka.fasta -t 4 -m r941_min_high_g360
      """
 
  }
@@ -409,7 +409,7 @@ if(params.multiqc){
          blast_dir = "$baseDir/"
      }
      else {
-         blast_dir = "/tmp/"
+         blast_dir = ""
      }
      db=blast_dir + params.db
      taxdb=blast_dir + params.tax
@@ -425,8 +425,7 @@ if(params.multiqc){
 
     else
         """
-        export BLASTDB=
-        export BLASTDB=\$BLASTDB:$taxdb
+        export BLASTDB=$taxdb
         blastn -query $consensus -db $db -task blastn -dust no -outfmt "10 sscinames staxids evalue length pident" -evalue 11 -max_hsps 50 -max_target_seqs 5 | sed 's/,/;/g' > consensus_classification.csv
         #DECIDE FINAL CLASSIFFICATION
         cat $cluster_log > ${cluster_id}_blast.log
